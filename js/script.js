@@ -40,14 +40,27 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	const deadline = '2023-09-25';
+	// Timer
 
-	const getTimeRemaining = function(dead) {
-		const t = Date.parse(dead) - new Date(),
-			days = Math.floor(t / (1000 * 60 * 60 * 24)),
-			hours = Math.floor(t / (1000 * 60 * 60) % 24),
-			minutes = Math.floor(t / (1000 * 60) % 60),
-			seconds = Math.floor(t / 1000 % 60);
+	const getNextDay = function() {
+		const newDay = new Date();
+		newDay.setDate(newDay.getDate() + 1);
+		newDay.setHours(0, 0, 0, 0);
+		return newDay;
+	};
+
+	const getTimeRemaining = function(deadline) {
+		let days, hours, minutes, seconds;
+		let t = deadline.getTime() - new Date(); 
+		if (t <= 0) {
+			deadline.setDate(deadline.getDate() + 1);
+			t = deadline.getTime() - new Date(); 
+		}
+		days = Math.floor(t / (1000 * 60 * 60 * 24)),
+		hours = Math.floor(t / (1000 * 60 * 60) % 24),
+		minutes = Math.floor(t / (1000 * 60) % 60),
+		seconds = Math.floor(t / 1000 % 60);
+
 		return {
 			total: t,
 			days,
@@ -68,21 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			days = timer.querySelector('#days'),
 			hours = timer.querySelector('#hours'),
 			minutes = timer.querySelector('#minutes'),
-			seconds = timer.querySelector('#seconds');
+			seconds = timer.querySelector('#seconds'),
+			interval = setInterval(updateClock, 1000);
 
-		const updateClock = function() {
+		updateClock();
+		function updateClock() {
 			const t = getTimeRemaining(endtime);
 
 			days.innerHTML = getZero(t.days);
 			hours.innerHTML = getZero(t.hours);
 			minutes.innerHTML = getZero(t.minutes);
 			seconds.innerHTML = getZero(t.seconds);
-
 			if (t.total <= 0) {
-				clearInterval(setClock);
+				clearInterval(interval);
 			}
-		};
-		const setClock = setInterval(updateClock, 1000);
+		}
 	};
-	setClock('.timer', deadline);
+	setClock('.timer', getNextDay());
 });
