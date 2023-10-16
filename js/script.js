@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			formData.forEach(function(value, key) {
 				object[key] = value;
 			});
-
+			console.log(object);
 
 			postData('http://localhost:3000/requests', JSON.stringify(object))
 				.then(data => { // При положительном исходе
@@ -301,7 +301,62 @@ document.addEventListener('DOMContentLoaded', () => {
 			closeModal();
 		}, 4000);
 	}
+
+	// Slider
+
+	const slider = document.querySelector('.offer__slider'),
+		slides = slider.querySelectorAll('.offer__slide'),
+		currentSlide = slider.querySelector('#current'),
+		totalSlides = slider.querySelector('#total'),
+		arrowLeft = slider.querySelector('.offer__slider-prev'),
+		arrowRight = slider.querySelector('.offer__slider-next');
+
+
+	const countTotalSlides = () => {
+		if (slides.length < 10) {
+			totalSlides.innerHTML = `0${slides.length}`;
+		} else {
+			totalSlides.innerHTML = slides.length;
+		}
+	};
+	countTotalSlides();
+
+	const hideSlides = () => {
+		slides.forEach(el => el.classList.add('hide'));
+		slides.forEach(el => el.classList.remove('show'));
+	};
+
+	const showSlide = (slide = 0) => {
+		hideSlides();
+		slides[slide].classList.remove('hide');
+		slides[slide].classList.add('show');
+		if (currentSlide.innerHTML < '10') {
+			currentSlide.innerHTML = `0${slide + 1}`;
+		} else {
+			currentSlide.innerHTML = slide + 1;
+		}
+	};
+	showSlide();
+
+	arrowLeft.addEventListener('click', () => {
+		if (parseInt(currentSlide.innerHTML) === 1) {
+			showSlide(slides.length - 1);
+		} else showSlide(parseInt(currentSlide.innerHTML) - 2);
+	});
+	arrowRight.addEventListener('click', () => {
+		if (parseInt(currentSlide.innerHTML) === slides.length) {
+			showSlide();
+		} else {
+			showSlide(parseInt(currentSlide.innerHTML));
+		} 
+	});
+
 });
+
+// if (parseInt(currentSlide.innerHTML) === (slides.length + 1)) {
+// 	showSlide(0);
+// }
+
 
 // fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
 
