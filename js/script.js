@@ -309,61 +309,114 @@ document.addEventListener('DOMContentLoaded', () => {
 		currentSlide = slider.querySelector('#current'),
 		totalSlides = slider.querySelector('#total'),
 		arrowLeft = slider.querySelector('.offer__slider-prev'),
-		arrowRight = slider.querySelector('.offer__slider-next');
+		arrowRight = slider.querySelector('.offer__slider-next'),
+		slidesWrapper = slider.querySelector('.offer__slider-wrapper'),
+		slidesField = slider.querySelector('.offer__slider-inner'),
+		width = window.getComputedStyle(slidesWrapper).width;
 
+	let slideIndex = 1;
+	let offset = 0;
 
-	const countTotalSlides = () => {
+	if (slides.length < 10) {
+		totalSlides.textContent = `0${slides.length}`;
+		currentSlide.textContent = `0${slideIndex}`;
+	} else {
+		totalSlides.textContent = slides.length;
+		currentSlide.textContent = slideIndex;
+	}
+
+	
+	slidesField.style.width = 100 * slides.length + '%';
+	slidesField.style.display = 'flex';
+	slidesField.style.transition = '0.5s all';
+
+	slidesWrapper.style.overflow = 'hidden';
+
+	slides.forEach(slide => {
+		slide.style.width = width;
+	});
+
+	arrowRight.addEventListener('click', () => {
+		if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+			offset = 0;
+			slideIndex = 1;
+		} else {
+			offset += +width.slice(0, width.length - 2);
+			slideIndex++;
+		}
+
+		slidesField.style.transform = `translateX(-${offset}px)`;
 		if (slides.length < 10) {
-			totalSlides.innerHTML = `0${slides.length}`;
+			currentSlide.textContent = `0${slideIndex}`;
 		} else {
-			totalSlides.innerHTML = slides.length;
+			currentSlide.textContent = slideIndex;
 		}
-	};
-	countTotalSlides();
-
-	const hideSlides = () => {
-		slides.forEach(el => el.classList.add('hide'));
-		slides.forEach(el => el.classList.remove('show'));
-	};
-
-	const showSlide = (slide = 0) => {
-		hideSlides();
-		slides[slide].classList.remove('hide');
-		slides[slide].classList.add('show');
-		if (currentSlide.innerHTML < '10') {
-			currentSlide.innerHTML = `0${slide + 1}`;
-		} else {
-			currentSlide.innerHTML = slide + 1;
-		}
-	};
-	showSlide();
+	});
 
 	arrowLeft.addEventListener('click', () => {
-		if (parseInt(currentSlide.innerHTML) === 1) {
-			showSlide(slides.length - 1);
-		} else showSlide(parseInt(currentSlide.innerHTML) - 2);
-	});
-	arrowRight.addEventListener('click', () => {
-		if (parseInt(currentSlide.innerHTML) === slides.length) {
-			showSlide();
+		if (offset == 0) {
+			offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+			slideIndex = slides.length;
 		} else {
-			showSlide(parseInt(currentSlide.innerHTML));
-		} 
+			offset -= +width.slice(0, width.length - 2);
+			slideIndex--;
+		}
+
+		slidesField.style.transform = `translateX(-${offset}px)`;
+		if (slides.length < 10) {
+			currentSlide.textContent = `0${slideIndex}`;
+		} else {
+			currentSlide.textContent = slideIndex;
+		}
 	});
 
-});
+	// Common Slider
 
-// if (parseInt(currentSlide.innerHTML) === (slides.length + 1)) {
-// 	showSlide(0);
-// }
-
-
-// fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
+	// 	if (slides.length < 10) {
+	// 		totalSlides.textContent = `0${slides.length}`;
+	// 	} else totalSlides.textContent = slides.length;
 
 
-// Promise train
+	// 	const hideSlides = () => {
+	// 		slides.forEach(el => el.classList.add('hide'));
+	// 		slides.forEach(el => el.classList.remove('show'));
+	// 	};
 
-// console.log('Запрос данных...');
+	// 	const showSlide = (slide = 0) => {
+	// 		hideSlides();
+	// 		slides[slide].classList.remove('hide');
+	// 		slides[slide].classList.add('show');
+	// 		if (slide + 1 < '10') {
+	// 			currentSlide.textContent = `0${slide + 1}`;
+	// 		} else {
+	// 			currentSlide.textContent = slide + 1;
+	// 		}
+	// 	};
+	// 	showSlide();
+
+	// 	arrowLeft.addEventListener('click', () => {
+	// 		if (currentSlide.textContent == 1) {
+	// 			showSlide(slides.length - 1);
+	// 		} else showSlide(parseInt(currentSlide.textContent) - 2);
+	// 	});
+	// 	arrowRight.addEventListener('click', () => {
+	// 		if (currentSlide.textContent == slides.length) {
+	// 			showSlide();
+	// 		} else {
+	// 			showSlide(parseInt(currentSlide.textContent));
+	// 		} 
+	// 	});
+
+	// });
+
+
+	// Promise
+
+	// fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
+
+	// Promise train
+
+	// console.log('Запрос данных...');
 
 // const req = new Promise((resolve, reject) => {
 // 	setTimeout(() => {
@@ -376,10 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // 		const gay = 'Max';
 // 		resolve(product, gay);
 // 	}, 2000);
-// });
+});
 
 // req.then((product) => {
 // 	console.log(product);
 // });
-
-
